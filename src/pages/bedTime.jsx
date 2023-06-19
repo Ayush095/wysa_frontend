@@ -10,11 +10,12 @@ function BedTime() {
   const [content, setcontent] = useState([]);
   const [selectedTime, setselectedTime] = useState([]);
   const user = useStore((state) => state.user);
+  const token = useStore((state) => state.token);
   const navigate = useNavigate();
 
 
   const getContent = async (num) => {
-    const response = await getContentPage(num);
+    const response = await getContentPage(num, token);
     if (response[0]) {
       setcontent(response[1]);
     } 
@@ -26,7 +27,7 @@ function BedTime() {
       email: user,
       num: 2,
       bedTime: selectedTime,
-    });
+    }, token);
     if (response[0]) {
       navigate('/getuptime');
     }

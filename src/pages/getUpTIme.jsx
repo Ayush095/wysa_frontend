@@ -1,6 +1,5 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import { getContentPage, postUserTime } from "../utiils/api";
 import Arrow from "../assets/arrow.svg";
 import useStore from "../store";
@@ -8,10 +7,11 @@ import useStore from "../store";
 function GetUpTime() {
   const [content, setcontent] = useState([]);
   const [selectedTime, setselectedTime] = useState([]);
+  const token = useStore((state) => state.token);
   const user = useStore((state) => state.user);
 
   const getContent = async (num) => {
-    const response = await getContentPage(num);
+    const response = await getContentPage(num, token);
     if (response[0]) {
       setcontent(response[1]);
     }
@@ -25,7 +25,7 @@ function GetUpTime() {
       email: user,
       num: 3,
       getUpTime: selectedTime
-    });
+    }, token);
     if (response[0]) {
       alert("Thanks for complete the process");
     }

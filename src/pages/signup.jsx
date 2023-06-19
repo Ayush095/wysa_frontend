@@ -1,5 +1,5 @@
 import React from "react";
-import {useState } from "react";
+import { useEffect, useState } from "react";
 import { postUserData } from "../utiils/api";
 import useStore from "../store";
 import {useNavigate} from 'react-router-dom';
@@ -7,10 +7,18 @@ import {useNavigate} from 'react-router-dom';
 
  function SignUp() {
     const user = useStore((state) => state.user);
-    const [email, setemail] = useState(user);
+    const setToken = useStore((state) => state.setToken);
+    const [email, setemail] = useState(user == null ? "" : user);
     const [password, setpassword] = useState("");
     const navigate = useNavigate();
     const setUser = useStore((state) => state.setUser);
+
+    useEffect(() => {
+      if(user){
+        navigate("/home")
+      }
+    }, []);
+
 
     const submitForm = async (e) => {
         e.preventDefault();
@@ -19,12 +27,12 @@ import {useNavigate} from 'react-router-dom';
             password: password
         });
         if(response[0]){
-            await setUser(email)
+            await setUser(email);
+            await setToken(response[1].jwtToken);
             navigate("/home");
         }
         alert(response[1].Message);
     }
-
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
             <img
@@ -47,6 +55,7 @@ import {useNavigate} from 'react-router-dom';
                 <div className="mt-2">
                   <input
                     name="email"
+                    type="email"
                     value = {email}
                     onChange={(e)=> setemail(e.target.value)}
                     required

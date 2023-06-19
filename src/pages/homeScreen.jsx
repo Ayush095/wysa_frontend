@@ -1,6 +1,5 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import { getContentPage, postUserTime } from "../utiils/api";
 import Arrow from "../assets/arrow.svg";
 import useStore from "../store";
@@ -10,13 +9,14 @@ import {useNavigate} from 'react-router-dom';
 import { options1 } from "../utiils/data";
 function HomeScreen() {
   const [content, setcontent] = useState([]);
+  const token = useStore((state) => state.token);
   const [sleepProblem, setsleepProblem] = useState([]);
   const navigate = useNavigate();
 
   const user = useStore((state) => state.user);
 
   const getContent = async (num) => {
-    const response = await getContentPage(num);
+    const response = await getContentPage(num, token);
     if (response[0]) {
       setcontent(response[1]);
     }
@@ -27,7 +27,7 @@ function HomeScreen() {
       email: user,
       num: 1,
       sleepProblem: sleepProblem
-    });
+    }, token);
     if (response[0]) {
       navigate('/bedtime');
     }
